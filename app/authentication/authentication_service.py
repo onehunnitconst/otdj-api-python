@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from fastapi.logger import logger
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from redis import Redis
 from sqlalchemy.orm import Session
 from settings import Settings, get_settings
 from authentication.dto.login_dto import LoginDto
@@ -12,7 +13,9 @@ from db.models import User
 import jwt
 
 
-def login(db: Session, ph: PasswordHasher, body: LoginDto, settings: Settings):
+def login(
+    db: Session, ph: PasswordHasher, body: LoginDto, redis: Redis, settings: Settings
+):
     user = db.query(User).where(User.user_id == body.user_id).first()
 
     if user == None:
@@ -34,6 +37,8 @@ def login(db: Session, ph: PasswordHasher, body: LoginDto, settings: Settings):
         key=settings.jwt_secret,
         algorithm=settings.jwt_algorithm,
     )
+
+    redis.set(name=f"token:{user.id}", value=token, ex=15)
 
     return LoginResponseDto(token=token)
 

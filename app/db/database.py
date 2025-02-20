@@ -3,8 +3,10 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from settings import get_settings
 
+settings = get_settings()
+
 engine = create_engine(
-    get_settings().database_url,
+    settings.database_url,
     isolation_level="REPEATABLE READ"
 )
 
