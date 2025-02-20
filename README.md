@@ -5,3 +5,6 @@ API 서버 프로토타입
 - FastAPI
 - Pydantic
 - SQLAlchemy
+- PostgreSQL
+- Redis
+- Docker
