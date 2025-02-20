@@ -29,8 +29,8 @@ async def get_user_id(
         
         cached_token = redis.get(f"token:{user_id}")
 
-        if cached_token is None:
-            raise HTTPException(status_code=401, detail="로그인 되어있지 않습니다.")
+        if cached_token is None or cached_token != token:
+            raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
 
         return user_id
     except ExpiredSignatureError:
