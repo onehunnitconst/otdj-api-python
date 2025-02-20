@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher
 
+from settings import Settings, get_settings
 from modules.password_hash import get_password_hasher
 from db.database import get_session
 from authentication.dto.login_dto import LoginDto
@@ -16,11 +17,13 @@ def login(
     body: LoginDto,
     db: Session = Depends(get_session),
     ph: PasswordHasher = Depends(get_password_hasher),
+    settings: Settings = Depends(get_settings)
 ):
     return authentication_service.login(
         body=body,
         db=db,
         ph=ph,
+        settings=settings
     )
 
 
